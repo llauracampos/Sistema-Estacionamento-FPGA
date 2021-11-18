@@ -1,0 +1,52 @@
+module estacionamento (input botao, sensor, reset, clock,
+        output reg motor_abrir, motor_fechar, led_green, led_red);
+        
+        
+reg[1:0]estado_atual = 0;
+parameter iniciar = 0, abrir = 1, fechar = 2;
+
+
+always @(*)begin
+
+case(estado_atual)
+
+ iniciar:begin 
+	motor_abrir = 0;
+	motor_fechar = 0;
+	led_green = 0; 
+	led_red = 0; end
+	
+abrir:begin 
+	motor_abrir = 1;
+	motor_fechar = 0;
+	led_green = 1; 
+	led_red = 0; end
+	
+fechar:begin
+	motor_abrir = 0;
+	motor_fechar = 1; 
+	led_green = 0; 
+	led_red = 1; end
+	
+endcase
+end
+
+always @(posedge clock, negedge reset) begin
+	if(~reset) 
+		estado_atual <= iniciar;
+	else 
+	
+	case(estado_atual)
+	
+	iniciar: if(botao == 0)
+		estado_atual <= abrir;
+				
+	abrir: if(sensor == 1)
+		estado_atual <= fechar;
+		
+	fechar: if(sensor == 0)
+		estado_atual <= iniciar;
+	endcase
+end
+
+endmodule

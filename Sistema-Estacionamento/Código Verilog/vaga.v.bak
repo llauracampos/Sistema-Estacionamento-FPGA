@@ -1,0 +1,24 @@
+module vaga (sensor, led_verde, led_verm);
+
+input sensor;
+output reg led_verde;
+output reg led_verm;
+
+reg[2:0] contador = 3'b000;
+ 
+always@(*) begin
+	if(~sensor)begin
+		led_verde = 1'b1;
+		led_verm = 1'b0; 
+		if(contador > 3'b000) begin
+			contador = contador - 1; end
+	end
+	else begin
+		led_verde = 1'b0;
+		led_verm = 1'b1;
+		if(contador < 3'b110) begin
+			contador = contador + 1; end
+	end
+		
+end 
+endmodule 
